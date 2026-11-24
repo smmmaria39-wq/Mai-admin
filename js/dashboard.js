@@ -4,7 +4,7 @@ import { initConversations, loadConversations } from './conversations.js';
 import { initAnalytics, loadAnalytics } from './analytics.js';
 import { initSettings } from './settings.js';
 
-const DEFAULT_API = 'https://smmmaria-backend-production-4513.up.railway.app/api/v1';
+const DEFAULT_API = 'https://ai-assistant-production-3804f48e.up.railway.app/api/v1';
 export const API_BASE = (localStorage.getItem('maria_admin_api_base') || DEFAULT_API).replace(/\/$/, '');
 const TOKEN_KEY = 'maria_ai_admin_token';
 export const getToken = () => sessionStorage.getItem(TOKEN_KEY);
