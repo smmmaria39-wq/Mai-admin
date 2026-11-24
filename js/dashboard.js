@@ -5,7 +5,12 @@ import { initAnalytics, loadAnalytics } from './analytics.js';
 import { initSettings } from './settings.js';
 
 const DEFAULT_API = 'https://ai-assistant-production-3804f48e.up.railway.app/api/v1';
-export const API_BASE = (localStorage.getItem('maria_admin_api_base') || DEFAULT_API).replace(/\/$/, '');
+const LEGACY_API = 'https://smmmaria-backend-production-4513.up.railway.app/api/v1';
+const savedApi = localStorage.getItem('maria_admin_api_base');
+if (!savedApi || savedApi.replace(/\/+$/, '') === LEGACY_API) {
+  localStorage.setItem('maria_admin_api_base', DEFAULT_API);
+}
+export const API_BASE = (localStorage.getItem('maria_admin_api_base') || DEFAULT_API).replace(/\/+$/, '');
 const TOKEN_KEY = 'maria_ai_admin_token';
 export const getToken = () => sessionStorage.getItem(TOKEN_KEY);
 export async function api(path, options = {}) {
@@ -15,7 +20,10 @@ export async function api(path, options = {}) {
   try { response = await fetch(`${(localStorage.getItem('maria_admin_api_base') || DEFAULT_API).replace(/\/$/, '')}${path}`, { ...options, headers }); }
   catch { throw new Error('Could not reach the backend. Check the API URL, network and CORS settings.'); }
   const payload = await response.json().catch(() => ({}));
-  if (!response.ok || payload.success === false) throw new Error(payload.message || `Request failed (${response.status}).`);
+  if (!response.ok || payload.success === false) {
+    if (response.status === 401 && !path.endsWith('/login')) sessionStorage.removeItem(TOKEN_KEY);
+    throw new Error(payload.message || `Request failed (${response.status}).`);
+  }
   return payload;
 }
 export function toast(message) { const el=document.getElementById('toast'); el.textContent=message; el.classList.add('show'); clearTimeout(toast.timer); toast.timer=setTimeout(()=>el.classList.remove('show'),3000); }
