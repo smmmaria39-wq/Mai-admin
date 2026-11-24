@@ -1,0 +1,3 @@
+import { api, toast } from './dashboard.js';
+const $=id=>document.getElementById(id);
+export function initUploads(){$('uploadForm').addEventListener('submit',async e=>{e.preventDefault();const btn=$('uploadSubmit');btn.disabled=true;try{await api('/maria-ai/admin/knowledge',{method:'POST',body:JSON.stringify({title:$('uploadTitle').value.trim(),type:$('uploadType').value,url:$('uploadUrl').value.trim(),content:$('uploadDescription').value.trim(),category:$('uploadCategory').value.trim()||'resources',status:$('uploadStatus').value,tags:['resource',$('uploadType').value]})});$('uploadForm').reset();$('uploadCategory').value='resources';toast('Resource URL saved to the knowledge base.');}catch(x){toast(x.message);}finally{btn.disabled=false;}});}

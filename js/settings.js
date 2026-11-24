@@ -1,0 +1,3 @@
+import { toast } from './dashboard.js';
+const DEFAULT_API='https://ai-assistant-production-3804f48e.up.railway.app/api/v1';
+export function initSettings(){const input=document.getElementById('apiBaseUrl');input.value=localStorage.getItem('maria_admin_api_base')||DEFAULT_API;document.getElementById('settingsForm').addEventListener('submit',e=>{e.preventDefault();const value=input.value.trim().replace(/\/$/,'');if(!/^https?:\/\//i.test(value)){document.getElementById('settingsStatus').textContent='Enter a valid HTTP or HTTPS API URL.';return;}localStorage.setItem('maria_admin_api_base',value);document.getElementById('settingsStatus').textContent='Connection URL saved for this browser. Sign in again if your session needs refreshing.';toast('Backend URL saved');});}
